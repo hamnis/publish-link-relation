@@ -1,0 +1,57 @@
+# Introduction
+This specification outlines the `publish` link relation and what it 
+means to publish something. The specification will register the relation
+according to [](#RFC5988).
+
+No assumptions will be made about which media type the target IRI will 
+accept, but some examples and guidelines will be given.
+
+# Notational Conventions
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", 
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this 
+document are to be interpreted as described in BCP 14, [RFC2119], 
+as scoped to those conformance targets.
+
+# Publishing
+What does it mean to publish something? In effect it can be interpreted
+as making something available for general consumption. 
+
+A newspaper can publish an article, then it can be read by 'everyone'. 
+
+A publisher can publish a book, so it can be read. 
+
+A video can be published on youtube so it can be watched.
+
+# The 'publish' link relation
+The `publish` link relation allows a resource to be published using the target
+IRI. 
+Clients SHOULD use an appropriate write method of the target IRI protocol
+uniform interface.
+
+Clients SHOULD use a POST request when using HTTP.
+
+Servers MAY ignore the request to publish something if the resource 
+URI is already published.
+
+Examples can be found in Appendix A: [](#Examples)
+
+# IANA Considerations
+
+IANA is asked to register the link relation `publish`, as per [](#RFC5988)
+
+Relation Name:
+
+publish
+
+Description:
+
+Allows resources to be published using the target IRI.
+
+Reference:
+
+ [[ this document ]]
+
+# Security Considerations
+
+No known security problems at this stage.

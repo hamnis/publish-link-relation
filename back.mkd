@@ -1,0 +1,94 @@
+# Examples
+
+Let's say you have an atom feed like the one below
+
+	<?xml version="1.0" encoding="utf-8"?>
+	<feed xmlns="http://www.w3.org/2005/Atom"
+	      xmlns:app="http://www.w3.org/2007/app">
+	  <title>Content feed</title>
+	  <updated>2005-07-31T12:29:29Z</updated>
+	  <id>tag:example.org,2003:3</id>
+	  <link rel="self" type="application/atom+xml"
+	      href="http://example.org/feed"/>
+	  <link rel="publish" 
+		  href="http://example.org/publish"/>
+	  <entry>
+	    <title>Item 1</title>
+	    <link rel="edit"
+	       href="http://example.org/item/1"/>
+	    <id>urn:id:1</id>
+	    <app:control>
+	      <app:draft>yes</app:draft>
+		<app:control>	
+	    <updated>2012-05-04T12:00:29Z</updated>
+	    <author>
+	      <name>Erlend Hamnaberg</name>
+	    </author>
+	    <content type="text">
+	      Some Content here.
+	    </content>
+	  </entry>
+	  <entry>
+	    <title>Item 2</title>
+	    <link rel="edit"
+	       href="http://example.org/item/2"/>
+	    <id>urn:id:1</id>
+	    <app:control>
+	      <app:draft>yes</app:draft>
+		<app:control>
+	    <updated>2012-05-04T12:29:29Z</updated>
+	    <author>
+	      <name>Erlend Hamnaberg</name>
+	    </author>
+	    <content type="text">
+	      Some Content here.
+	    </content>
+	  </entry>
+	</feed>
+	
+Using [atompub](#RFC5023), a Client would have to GET each 
+entry using it's `edit` relation and PUT each back with
+	
+	<app:draft>no</app:draft>
+	
+being the only change in both entries.
+
+This is highly inefficient. So let us find a better way.
+
+## Publishing multiple resources
+
+To be able to publish many resources at once we need a 
+representation which allows this. 
+
+Appendix A in [](#RFC2169) defines the `text/uri-list` media type.
+
+Extra linefeeds are for display purposes only.
+
+	POST /publish
+	Host: example.org
+	Content-Type: text/uri-list
+	
+    http://example.org/item/1\r\n
+	http://example.org/item/2\r\n
+
+The problem with this approach is that is is a separate resource, 
+and will not invalidate the caches of the feed. This problem is also apparent 
+in the single item approach.
+
+One might mediate this by making the feed resource also accept
+`text/uri-list` for publishing. This could even be indicated in the 
+`app:collection` element like this:
+	
+	<app:collection>
+	  <app:accept>text/uri-list</app:accept>
+	  <app:accept>application/atom+xml;type=entry</app:accept>
+	</app:collection>
+
+We could then change the request to this:
+
+	POST /feed
+	Host: example.org
+	Content-Type: text/uri-list
+	
+    http://example.org/item/1\r\n
+	http://example.org/item/2\r\n
